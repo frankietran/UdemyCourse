@@ -21,3 +21,7 @@ class ExplicitWait:
         wait = WebDriverWait(self.driver, timeout, pf)
         return wait.until(EC.url_to_be(url))
 
+    def wait_for_new_window(self):
+        wait = WebDriverWait(self.driver, 10)
+        return wait.until(lambda driver: len(self.driver.window_handles) == 2)
+
