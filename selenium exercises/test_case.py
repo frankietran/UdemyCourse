@@ -1,76 +1,63 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from driver_controller import DriverController
+from pom.page_objects import *
+
 
 user = ""
 password = ""
 
 
-def get_driver_by(browser):
+def get_driver_by_browser_name(browser, headless):
+    #work on headless
+    """
+    if headless is True:
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--window-size=1920x1080")
+        options.add_argument("--mute-audio")
+    """
     driver = None
     browser = browser.lower()
     if browser == "chrome":
         driver = webdriver.Chrome(executable_path="drivers/chromedriver")
-    else:
-        print("This browser is not supported")
+        #driver = webdriver.Chrome(executable_path="drivers/chromedriver", options=options)
+    assert driver is not None, "This browser is not supported"
     return driver
 
 
-def fill_in_ggl_form(dc):
-    email_input = dc.get_element("css", "input#identifierId")
-    dc.send_keys(email_input, user)
+def login_ggl_by_browser_name(browser):
+    driver = get_driver_by_browser_name(browser, False)
+    dc = DriverController(driver)
+    base_page = BasePage(dc)
+    land_page = LandingPage(dc)
+    login_modal = LoginModal(dc)
+    popup_email = AuthenticationPopupEmail(dc)
+    popup_password = AuthenticationPopupPassword(dc)
+    home_page = HomePage(dc)
 
-    email_next = dc.get_element("css", "div#identifierNext button")
-    dc.click(email_next)
+    base_page.go_to_url("")     #not implemented yet
+    assert land_page.is_present()
 
-    password_input = dc.get_element("css", "input[type='password']")
-    dc.send_keys(password_input, password)
+    land_page.click_login_button()
+    assert login_modal.is_present()
 
-    password_next = dc.get_element("css", "div#passwordNext button")
-    dc.click(password_next)
+    login_modal.click_google_icon()
+    base_page.switch()       #not implemented yet
 
+    assert popup_email.is_present()
+    popup_email.enter_email(user)
+    popup_email.click_email_next()
 
-def verify_land_homepage(dc):
-    try:
-        assert dc.has_url("https://www.got-it.ai/solutions/excel-chat/home")
-        assert (dc.get_element("css", "i[class*='account'") is not None)
-    except AssertionError:
-        print("Did not land on homepage")
-    finally:
-        dc.quit_browser()
+    assert popup_password.is_present()
+    popup_password.enter_password()
+    popup_password.click_email_next()
 
-
-def login_ggl(dc):
-    dc.go_to_url("https://www.got-it.ai/solutions/excel-chat/")
-
-    test_login_button = dc.get_element("css", "button#test-login-button")
-    dc.click(test_login_button)
-
-    main_win = dc.get_curr_win()
-    open_wins_before = dc.get_all_win_handles()
-
-    #google_icon = dc.get_element("xpath", "//div[class ='gi-FormRow']//button[text()='Google']")
-    google_icon = dc.get_element("css", "div[class ='gi-FormRow'] div:nth-child(2) button")
-    dc.click(google_icon)
-
-    try:
-        dc.wait_for_new_win(len(open_wins_before))
-    except TimeoutError:
-        print("Google log in window does not open")
-    else:
-        open_wins_after = dc.get_all_win_handles()
-        for win_handle in open_wins_after:
-            if win_handle not in open_wins_before:
-                dc.switch_to_win(win_handle)
-                fill_in_ggl_form(dc)
-                dc.switch_to_win(main_win)
-                verify_land_homepage(dc)
+    base_page.switch()       #not implemented yet
+    assert home_page.is_present()
+    home_page.post_problem()     #not implemented yet
 
 
-def login_ggl_by_driver(driver_type):
-    driver = get_driver_by(driver_type)
-    if driver is not None:
-        dc = DriverController(driver)
-        login_ggl(dc)
-
-
-login_ggl_by_driver("chrome")
+login_ggl_by_browser_name("chrome")
