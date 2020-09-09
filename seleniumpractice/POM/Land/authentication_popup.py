@@ -1,5 +1,7 @@
-from ..BasePOs.base_page import BasePage
 from selenium.webdriver.common.by import By
+
+from seleniumpractice.POM.BasePOs.base_page import BasePage
+
 
 page_url = "https://accounts.google.com/"
 email_input_locator = "input#identifierId"

@@ -1,5 +1,6 @@
-from .base_po import BasePO
 from selenium.webdriver.common.by import By
+
+from seleniumpractice.POM.BasePOs.base_po import BasePO
 
 
 class BaseModal(BasePO):

@@ -1,9 +1,11 @@
-from ..BasePOs.base_modal import BaseModal
 from selenium.webdriver.common.by import By
 
-linkedin_icon_index = 0
-google_icon_index = 1
-facebook_icon_index = 2
+from seleniumpractice.POM.BasePOs.base_modal import BaseModal
+
+
+linkedin_icon_index = 1
+google_icon_index = 2
+facebook_icon_index = 3
 icon_locator = "div[class ='gi-FormRow'] div:nth-child({}) button"
 modal_id = "modal-login"
 

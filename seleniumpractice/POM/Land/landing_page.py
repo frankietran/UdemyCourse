@@ -1,5 +1,6 @@
-from ..BasePOs.base_page import BasePage
 from selenium.webdriver.common.by import By
+
+from seleniumpractice.POM.BasePOs.base_page import BasePage
 
 
 page_url = "https://www.got-it.ai/solutions/excel-chat/"
