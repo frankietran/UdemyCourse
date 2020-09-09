@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 class DriverController:
     def __init__(self, driver):
         self.driver = driver
@@ -11,7 +12,7 @@ class DriverController:
         self.driver.get(url)
 
     def has_url(self, url, timeout=10, pf=1):
-        wait = WebDriverWait(driver=self.driver, timeout= timeout, poll_frequency= pf)
+        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
         try:
             wait.until(EC.url_contains(url))
         except:
@@ -32,13 +33,13 @@ class DriverController:
         self.driver.switch_to.window(win)
 
     def wait_for_new_win(self, num_win):
-        wait = WebDriverWait(driver=self.driver, timeout= 10, poll_frequency= 1)
+        wait = WebDriverWait(driver=self.driver, timeout=10, poll_frequency=1)
         return wait.until(lambda driver: len(self.driver.window_handles) >= num_win+1)
 
     def get_element(self, by_type, locator, timeout=10, pf=1):
         element = None
         try:
-            wait = WebDriverWait(driver=self.driver, timeout= timeout, poll_frequency= pf)
+            wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
             element = wait.until(EC.element_to_be_clickable((by_type, locator)))
         except:
             print("Element not found")
@@ -58,6 +59,6 @@ class DriverController:
         else:
             element.send_keys(key)
 
-    def is_element_present(self, by_type, locator, timeout=10, pf=1):
-        return self.get_element(by_type, locator, timeout, pf) is not None
-
+    def save_screenshot(self, filename):
+        filepath = "../Screenshots/" + filename
+        self.driver.save_screenshot(filepath)
