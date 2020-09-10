@@ -1,5 +1,6 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import *
 
 
 class DriverController:
@@ -11,11 +12,11 @@ class DriverController:
     def go_to_url(self, url):
         self.driver.get(url)
 
-    def has_url(self, url, timeout=10, pf=1):
+    def wait_for_url_that_contains(self, url, timeout=10, pf=1):
         wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
         try:
             wait.until(EC.url_contains(url))
-        except:
+        except TimeoutException:
             return False
         else:
             return True
@@ -34,31 +35,66 @@ class DriverController:
 
     def wait_for_new_win(self, num_win):
         wait = WebDriverWait(driver=self.driver, timeout=10, poll_frequency=1)
-        return wait.until(lambda driver: len(self.driver.window_handles) >= num_win+1)
+        try:
+            wait.until(lambda driver: len(self.driver.window_handles) >= num_win+1)
+        except TimeoutException:
+            return False
+        return True
 
-    def get_element(self, by_type, locator, timeout=10, pf=1):
+    def wait_for_element_to_be_available(self, by_type, locator, timeout=10, pf=1):
+        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
+        try:
+            wait.until(EC.element_to_be_clickable((by_type, locator)))
+        except TimeoutException:
+            return False
+        return True
+
+    def get_elements(self, by_type, locator):
+        elements = self.driver.find_elements(by_type, locator)
+        if len(elements) == 0:
+            print("No element found")
+        return elements
+
+    def get_element(self, by_type, locator):
         element = None
         try:
-            wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
-            element = wait.until(EC.element_to_be_clickable((by_type, locator)))
-        except:
+            element = self.driver.find_element(by_type, locator)
+        except NoSuchElementException:
             print("Element not found")
         return element
 
-    def click(self, by_type, locator, timeout=10, pf=1):
-        element = self.get_element(by_type, locator, timeout, pf)
+    def click_element(self, by_type, locator):
+        element = self.get_element(by_type, locator)
         if element is None:
             print("Can't click None element")
         else:
             element.click()
 
-    def send_keys(self, key, by_type, locator, timeout=10, pf=1):
-        element = self.get_element(by_type, locator, timeout, pf)
+    def click_element_from_list_by_index(self, by_type, locator, index):
+        elements = self.get_element(by_type, locator)
+        try:
+            element = elements[index]
+        except IndexError:
+            print("Can't be click element not found")
+        else:
+            element.click()
+
+    def send_keys_to_element(self, key, by_type, locator):
+        element = self.get_element(by_type, locator)
         if element is None:
-            print("Can't send keys to None element")
+            print("Can't send keys to element not found")
+        else:
+            element.send_keys(key)
+
+    def send_keys_to_element_from_list_by_index(self, key, by_type, locator, index):
+        elements = self.get_element(by_type, locator)
+        try:
+            element = elements[index]
+        except IndexError:
+            print("Can't send keys to element not found")
         else:
             element.send_keys(key)
 
     def save_screenshot(self, filename):
-        filepath = "../Screenshots/" + filename
+        filepath = "/screenshots_failed_steps/" + filename
         self.driver.save_screenshot(filepath)

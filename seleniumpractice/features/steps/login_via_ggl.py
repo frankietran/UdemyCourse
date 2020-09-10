@@ -1,14 +1,17 @@
 from behave import *
 
-from seleniumpractice.POM.Land.landing_page import LandingPage
-from seleniumpractice.POM.Land.login_modal import LoginModal
-from seleniumpractice.POM.Land.authentication_popup import AuthenticationPopup
-from seleniumpractice.POM.Home.home_page import HomePage
-from seleniumpractice.POM.Home.choose_package_modal import ChoosePackageModal
+from seleniumpractice.pom.land.landing_page import LandingPage
+from seleniumpractice.pom.land.login_modal import LoginModal
+from seleniumpractice.pom.land.google_authentication_popup import GoogleAuthenticationPopup
+from seleniumpractice.pom.home.home_page import HomePage
+from seleniumpractice.pom.home.choose_package_modal import ChoosePackageModal
+
+from seleniumpractice.resources.undecided import problem_des
+from seleniumpractice.resources.undecided import problem_file_path
 
 
-email = ""
-password = ""
+email = "frankie@gotitapp.co"
+password = "m1u@GotItapp"
 
 
 @given('user is at landing page')
@@ -45,20 +48,20 @@ def step_impl(context):
     for handle in handles_after_click:
         if handle not in context.handles_before_click:
             context.dc.switch_to_win(handle)
-            context.popup = AuthenticationPopup(context.dc)
+            context.popup = GoogleAuthenticationPopup(context.dc)
 
 
-@when('user fills in correct credentials')
+@when('user fills in correct email and password')
 def step_impl(context):
     context.popup.enter_email(email)
     context.popup.click_email_next()
     context.popup.enter_password(password)
-    context.popup.click_email_next()
+    context.popup.click_password_next()
 
 
 @when('user switches back to the main window')
 def step_impl(context):
-    context.dc.switch_to_win(context.dc.main_window)
+    context.dc.switch_to_win(context.main_window)
 
 
 @then('user is at home page')
