@@ -13,13 +13,13 @@ from seleniumpractice.resources.undecided import email
 from seleniumpractice.resources.undecided import password
 
 
-@given('user is at landing page')
+@given('user is on landing page')
 def step_impl(context):
     context.dc.go_to_url(landing_page_url)
     LandingPage(context.dc)
 
 
-@when('user clicks login button')
+@when('user clicks login button on landing page')
 def step_impl(context):
     land_page = LandingPage(context.dc)
     land_page.click_login_button()
@@ -30,20 +30,20 @@ def step_impl(context):
     LoginModal(context.dc)
 
 
-@when('user clicks google icon in login modal')
+@when('user clicks Google icon in login modal')
 def step_impl(context):
     login_modal = LoginModal(context.dc)
-    context.main_window = context.dc.get_curr_win()
-    context.handles_before_click = context.dc.get_all_win_handles()
+    context.main_window = context.dc.get_curr_win()                    # save handle to switch back to main window later
+    context.handles_before_click = context.dc.get_all_win_handles()    # save window handles before click to detect new window
     login_modal.click_google_icon()
 
 
-@then('user sees a new authentication window')
+@then('user sees a new window')
 def step_impl(context):
-    assert context.dc.wait_for_new_win(len(context.handles_before_click))
+    assert context.dc.wait_for_new_win(context.handles_before_click)
 
 
-@when('user switches to the new window')
+@when('user switches to the Google authentication window')
 def step_impl(context):
     handles_after_click = context.dc.get_all_win_handles()
     for handle in handles_after_click:
@@ -52,7 +52,7 @@ def step_impl(context):
             GoogleAuthenticationPopup(context.dc)
 
 
-@when('user fills in correct email and password')
+@when('user successfully follows through Google authentication process in Google authentication window')
 def step_impl(context):
     popup = GoogleAuthenticationPopup(context.dc)
     popup.enter_email(email)
@@ -66,16 +66,17 @@ def step_impl(context):
     context.dc.switch_to_win(context.main_window)
 
 
-@then('user is at home page')
+@then('user is on home page')
 def step_impl(context):
     HomePage(context.dc)
 
 
-@when('user posts a problem')
+@when('user enters problem description and uploads a problem file on home page and submits the problem')
 def step_impl(context):
     home_page = HomePage(context.dc)
     home_page.enter_problem_description(problem_des)
     home_page.upload_file(problem_file_path)
+    home_page.submit_problem()
 
 
 @then('user sees choose package modal')

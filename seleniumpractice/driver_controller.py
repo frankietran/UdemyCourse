@@ -33,27 +33,23 @@ class DriverController:
     def switch_to_win(self, win):
         self.driver.switch_to.window(win)
 
-    def wait_for_new_win(self, num_win):
+    def wait_for_new_win(self, current_handles):
         wait = WebDriverWait(driver=self.driver, timeout=10, poll_frequency=1)
         try:
-            wait.until(lambda driver: len(self.driver.window_handles) >= num_win+1)
+            wait.until(EC.new_window_is_opened(current_handles))
         except TimeoutException:
             return False
         return True
 
-    def wait_for_element_to_be_available(self, by_type, locator, timeout=10, pf=1):
-        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
+    def wait_for_element_to_be_clickable(self, by_type, locator, timeout=10, pf=1):
+        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf,
+                             ignored_exceptions=ElementNotInteractableException)
         try:
             wait.until(EC.element_to_be_clickable((by_type, locator)))
         except TimeoutException:
+            print("Can't wait for element to be clickable")
             return False
         return True
-
-    def get_elements(self, by_type, locator):
-        elements = self.driver.find_elements(by_type, locator)
-        if len(elements) == 0:
-            print("No element found")
-        return elements
 
     def get_element(self, by_type, locator):
         element = None
@@ -63,34 +59,32 @@ class DriverController:
             print("Element not found")
         return element
 
-    def click_element(self, by_type, locator):
+    def click(self, by_type, locator):
         element = self.get_element(by_type, locator)
         if element is None:
             print("Can't click None element")
         else:
             element.click()
 
-    def click_element_from_list_by_index(self, by_type, locator, index):
-        elements = self.get_element(by_type, locator)
-        try:
-            element = elements[index]
-        except IndexError:
-            print("Can't be click element not found")
+    def wait_to_click(self, by_type, locator, timeout=10, pf=1):
+        assert self.wait_for_element_to_be_clickable(by_type, locator, timeout, pf)
+        element = self.get_element(by_type, locator)
+        if element is None:
+            print("Can't click None element")
         else:
             element.click()
 
-    def send_keys_to_element(self, key, by_type, locator):
+    def send_keys(self, key, by_type, locator):
         element = self.get_element(by_type, locator)
         if element is None:
             print("Can't send keys to element not found")
         else:
             element.send_keys(key)
 
-    def send_keys_to_element_from_list_by_index(self, key, by_type, locator, index):
-        elements = self.get_element(by_type, locator)
-        try:
-            element = elements[index]
-        except IndexError:
+    def wait_to_send_keys(self, key, by_type, locator, timeout=10, pf=1):
+        assert self.wait_for_element_to_be_clickable(by_type, locator, timeout, pf)
+        element = self.get_element(by_type, locator)
+        if element is None:
             print("Can't send keys to element not found")
         else:
             element.send_keys(key)

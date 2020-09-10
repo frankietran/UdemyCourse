@@ -1,17 +1,15 @@
 @fixture.browser.chrome
-Feature: log in via Google
-  A user should be able to log in using Google account
-  and post a problem
+Feature: a user can log in via Google and post a problem
 
-  Scenario: log in via Google successfully
-    Given user is at landing page
-    When user clicks login button
+  Scenario: log in via Google successfully and post a problem
+    Given user is on landing page
+    When user clicks login button on landing page
     Then user sees login modal
-    When user clicks google icon in login modal
-    Then user sees a new authentication window
-    When user switches to the new window
-    And user fills in correct email and password
+    When user clicks Google icon in login modal
+    Then user sees a new window
+    When user switches to the Google authentication window
+    And user successfully follows through Google authentication process in Google authentication window
     And user switches back to the main window
-    Then user is at home page
-    When user posts a problem
+    Then user is on home page
+    When user enters problem description and uploads a problem file on home page and submits the problem
     Then user sees choose package modal

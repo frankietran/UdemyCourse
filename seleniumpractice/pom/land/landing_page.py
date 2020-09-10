@@ -9,4 +9,4 @@ class LandingPage(BasePage):
     login_button_locator = "button#test-login-button"
 
     def click_login_button(self):
-        self.dc.click_element(By.CSS_SELECTOR, self.login_button_locator)
+        self.dc.click(By.CSS_SELECTOR, self.login_button_locator)
