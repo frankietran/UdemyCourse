@@ -3,7 +3,7 @@ home_page_url = "https://www.got-it.ai/solutions/excel-chat/home"
 google_authentication_popup_url = "https://accounts.google.com/"
 
 email = "frankie@gotitapp.co"
-password = "m1u@GotItapp"
+password = ""
 
 
 problem_des = "Get instant expert help with Excel and Google Sheets"

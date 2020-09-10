@@ -24,4 +24,5 @@ def before_tag(context, tag):
 
 def after_step(context, step):
     if step.status == Status.failed:
-        context.dc.save_screenshot(context.scenario.name + "_" + step.name + "_" + str(time.time()) + ".png")
+        filename = context.scenario.name + "_" + step.name + "_" + str(time.time()) + ".png"
+        context.dc.save_screenshot(filename)

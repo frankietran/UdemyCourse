@@ -74,8 +74,8 @@ def step_impl(context):
 @when('user enters problem description and uploads a problem file on home page and submits the problem')
 def step_impl(context):
     home_page = HomePage(context.dc)
-    home_page.enter_problem_description(problem_des)
     home_page.upload_file(problem_file_path)
+    home_page.enter_problem_description(problem_des)
     home_page.submit_problem()
 
 

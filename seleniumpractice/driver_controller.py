@@ -42,8 +42,7 @@ class DriverController:
         return True
 
     def wait_for_element_to_be_clickable(self, by_type, locator, timeout=10, pf=1):
-        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf,
-                             ignored_exceptions=ElementNotInteractableException)
+        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
         try:
             wait.until(EC.element_to_be_clickable((by_type, locator)))
         except TimeoutException:
@@ -90,5 +89,5 @@ class DriverController:
             element.send_keys(key)
 
     def save_screenshot(self, filename):
-        filepath = "/screenshots_failed_steps/" + filename
+        filepath = "/Users/gotit/Documents/UdemyCourse/seleniumpractice/features/screenshots_failed_steps/" + filename
         self.driver.save_screenshot(filepath)
