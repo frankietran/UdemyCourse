@@ -1,4 +1,4 @@
-@fixture.driver.chrome
+@fixture.browser.chrome
 Feature: log in via Google
   A user should be able to log in using Google account
   and post a problem

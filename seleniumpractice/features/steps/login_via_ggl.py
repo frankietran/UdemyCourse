@@ -6,35 +6,36 @@ from seleniumpractice.pom.land.google_authentication_popup import GoogleAuthenti
 from seleniumpractice.pom.home.home_page import HomePage
 from seleniumpractice.pom.home.choose_package_modal import ChoosePackageModal
 
+from seleniumpractice.resources.undecided import landing_page_url
 from seleniumpractice.resources.undecided import problem_des
 from seleniumpractice.resources.undecided import problem_file_path
-
-
-email = "frankie@gotitapp.co"
-password = "m1u@GotItapp"
+from seleniumpractice.resources.undecided import email
+from seleniumpractice.resources.undecided import password
 
 
 @given('user is at landing page')
 def step_impl(context):
-    context.dc.go_to_url("https://www.got-it.ai/solutions/excel-chat/")
-    context.land_page = LandingPage(context.dc)
+    context.dc.go_to_url(landing_page_url)
+    LandingPage(context.dc)
 
 
 @when('user clicks login button')
 def step_impl(context):
-    context.land_page.click_login_button()
+    land_page = LandingPage(context.dc)
+    land_page.click_login_button()
 
 
 @then('user sees login modal')
 def step_impl(context):
-    context.login_modal = LoginModal(context.dc)
+    LoginModal(context.dc)
 
 
 @when('user clicks google icon in login modal')
 def step_impl(context):
+    login_modal = LoginModal(context.dc)
     context.main_window = context.dc.get_curr_win()
     context.handles_before_click = context.dc.get_all_win_handles()
-    context.login_modal.click_google_icon()
+    login_modal.click_google_icon()
 
 
 @then('user sees a new authentication window')
@@ -48,15 +49,16 @@ def step_impl(context):
     for handle in handles_after_click:
         if handle not in context.handles_before_click:
             context.dc.switch_to_win(handle)
-            context.popup = GoogleAuthenticationPopup(context.dc)
+            GoogleAuthenticationPopup(context.dc)
 
 
 @when('user fills in correct email and password')
 def step_impl(context):
-    context.popup.enter_email(email)
-    context.popup.click_email_next()
-    context.popup.enter_password(password)
-    context.popup.click_password_next()
+    popup = GoogleAuthenticationPopup(context.dc)
+    popup.enter_email(email)
+    popup.click_email_next()
+    popup.enter_password(password)
+    popup.click_password_next()
 
 
 @when('user switches back to the main window')
@@ -66,15 +68,16 @@ def step_impl(context):
 
 @then('user is at home page')
 def step_impl(context):
-    context.home_page = HomePage(context.dc)
+    HomePage(context.dc)
 
 
 @when('user posts a problem')
 def step_impl(context):
-    context.home_page.enter_problem_description()
-    context.home_page.upload_file()
+    home_page = HomePage(context.dc)
+    home_page.enter_problem_description(problem_des)
+    home_page.upload_file(problem_file_path)
 
 
 @then('user sees choose package modal')
 def step_impl(context):
-    context.login_modal = ChoosePackageModal(context.dc)
+    ChoosePackageModal(context.dc)
