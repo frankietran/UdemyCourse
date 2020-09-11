@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
 from seleniumpractice.pom.basepos.base_page import BasePage
-from seleniumpractice.resources.undecided import landing_page_url
+from seleniumpractice.resources.test_data import landing_page_url
 
 
 class LandingPage(BasePage):

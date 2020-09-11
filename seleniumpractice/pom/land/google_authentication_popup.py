@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
 from seleniumpractice.pom.basepos.base_page import BasePage
-from seleniumpractice.resources.undecided import google_authentication_popup_url
+from seleniumpractice.resources.test_data import google_authentication_popup_url
 
 
 class GoogleAuthenticationPopup(BasePage):
@@ -18,7 +18,7 @@ class GoogleAuthenticationPopup(BasePage):
         self.dc.click(By.CSS_SELECTOR, self.email_next_button_locator)
 
     def switched_to_password_screen(self):
-        assert self.dc.wait_for_element_to_be_clickable(By.CSS_SELECTOR, self.password_input_locator)
+        assert self.dc.is_element_clickable_after_wait(By.CSS_SELECTOR, self.password_input_locator)
 
     def enter_password(self, password):
         self.dc.wait_to_send_keys(password, By.CSS_SELECTOR, self.password_input_locator)

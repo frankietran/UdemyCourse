@@ -5,4 +5,4 @@ class BasePage(BasePO):
     page_url = None
 
     def is_present(self):
-        return self.dc.wait_for_url_that_contains(self.page_url)
+        return self.dc.does_curr_url_contain(self.page_url)

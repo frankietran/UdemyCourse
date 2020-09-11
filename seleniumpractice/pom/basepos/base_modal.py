@@ -7,4 +7,4 @@ class BaseModal(BasePO):
     ele_container_modal_id = None
 
     def is_present(self):
-        return self.dc.wait_for_element_to_be_clickable(By.CSS_SELECTOR, self.ele_container_modal_id)
+        return self.dc.is_element_clickable_after_wait(By.CSS_SELECTOR, self.ele_container_modal_id)

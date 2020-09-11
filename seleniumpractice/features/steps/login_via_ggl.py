@@ -6,31 +6,33 @@ from seleniumpractice.pom.land.google_authentication_popup import GoogleAuthenti
 from seleniumpractice.pom.home.home_page import HomePage
 from seleniumpractice.pom.home.choose_package_modal import ChoosePackageModal
 
-from seleniumpractice.resources.undecided import landing_page_url
-from seleniumpractice.resources.undecided import problem_des
-from seleniumpractice.resources.undecided import problem_file_path
-from seleniumpractice.resources.undecided import email
-from seleniumpractice.resources.undecided import password
+from seleniumpractice.resources.test_data import landing_page_url
+from seleniumpractice.resources.test_data import problem_des
+from seleniumpractice.resources.test_data import problem_file_path
+from seleniumpractice.resources.test_data import email
+from seleniumpractice.resources.test_data import password
 
 
-@given('user is on landing page')
+@given('I am on landing page')
 def step_impl(context):
     context.dc.go_to_url(landing_page_url)
-    LandingPage(context.dc)
+    land_page = LandingPage(context.dc)
+    assert land_page.is_present()
 
 
-@when('user clicks login button on landing page')
+@when('I click login button on landing page')
 def step_impl(context):
     land_page = LandingPage(context.dc)
     land_page.click_login_button()
 
 
-@then('user sees login modal')
+@then('I should see login modal')
 def step_impl(context):
-    LoginModal(context.dc)
+    login_modal = LoginModal(context.dc)
+    assert login_modal.is_present()
 
 
-@when('user clicks Google icon in login modal')
+@given('I click Google icon in login modal')
 def step_impl(context):
     login_modal = LoginModal(context.dc)
     context.main_window = context.dc.get_curr_win()                    # save handle to switch back to main window later
@@ -38,21 +40,23 @@ def step_impl(context):
     login_modal.click_google_icon()
 
 
-@then('user sees a new window')
+@when('a new Google authentication window pops up')
 def step_impl(context):
-    assert context.dc.wait_for_new_win(context.handles_before_click)
+    context.dc.wait_for_new_win(context.handles_before_click)
 
 
-@when('user switches to the Google authentication window')
+@then('I should be able to switch to the Google authentication window')
 def step_impl(context):
     handles_after_click = context.dc.get_all_win_handles()
     for handle in handles_after_click:
         if handle not in context.handles_before_click:
             context.dc.switch_to_win(handle)
-            GoogleAuthenticationPopup(context.dc)
+            popup = GoogleAuthenticationPopup(context.dc)
+            assert popup.is_present()
+            return
 
 
-@when('user successfully follows through Google authentication process in Google authentication window')
+@given('I successfully follow through Google authentication process in Google authentication window')
 def step_impl(context):
     popup = GoogleAuthenticationPopup(context.dc)
     popup.enter_email(email)
@@ -61,24 +65,36 @@ def step_impl(context):
     popup.click_password_next()
 
 
-@when('user switches back to the main window')
+@when('I switch back to the main window')
 def step_impl(context):
     context.dc.switch_to_win(context.main_window)
 
 
-@then('user is on home page')
+@then('I should be on home page')
 def step_impl(context):
-    HomePage(context.dc)
+    home_page = HomePage(context.dc)
+    assert home_page.is_present()
 
 
-@when('user enters problem description and uploads a problem file on home page and submits the problem')
+@when('I enter problem description on home page')
+def step_impl(context):
+    home_page = HomePage(context.dc)
+    home_page.enter_problem_description(problem_des)
+
+
+@when('upload a problem file')
 def step_impl(context):
     home_page = HomePage(context.dc)
     home_page.upload_file(problem_file_path)
-    home_page.enter_problem_description(problem_des)
+
+
+@when('submit the problem')
+def step_impl(context):
+    home_page = HomePage(context.dc)
     home_page.submit_problem()
 
 
-@then('user sees choose package modal')
+@then('I should see choose package modal')
 def step_impl(context):
-    ChoosePackageModal(context.dc)
+    choose_package_modal = ChoosePackageModal(context.dc)
+    assert choose_package_modal.is_present()
