@@ -3,6 +3,7 @@ import time
 from behave.fixture import use_fixture_by_tag
 from behave.model_core import Status
 
+from seleniumpractice.pom.provider import Provider
 from seleniumpractice.features.steps.fixtures import browser_chrome
 from seleniumpractice.features.steps.fixtures import browser_firefox
 from seleniumpractice.resources.test_data import directory_path
@@ -16,8 +17,11 @@ fixture_registry = {
 }
 
 
+def before_all(context):
+    context.provider = Provider()
+
+
 def before_tag(context, tag):
-    print("")
     if tag.startswith("fixture."):
         return use_fixture_by_tag(tag, context, fixture_registry)
 

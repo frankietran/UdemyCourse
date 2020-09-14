@@ -37,6 +37,11 @@ class DriverController:
         wait.until(EC.element_to_be_clickable((by_type, locator)))
         return True
 
+    def is_element_visible_after_wait(self, by_type, locator, timeout=10, pf=1):
+        wait = WebDriverWait(driver=self.driver, timeout=timeout, poll_frequency=pf)
+        wait.until(EC.visibility_of_element_located((by_type, locator)))
+        return True
+
     def get_element(self, by_type, locator):
         return self.driver.find_element(by_type, locator)
 
@@ -53,7 +58,7 @@ class DriverController:
         element.send_keys(key)
 
     def wait_to_send_keys(self, key, by_type, locator, timeout=10, pf=1):
-        self.is_element_clickable_after_wait(by_type, locator, timeout, pf)
+        self.is_element_visible_after_wait(by_type, locator, timeout, pf)
         self.send_keys(key, by_type, locator)
 
     def save_screenshot(self, directory_path, file_name):
